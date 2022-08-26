@@ -6,7 +6,15 @@ const Button = ({name}) => {
   )
 }
 
-const Statistics = ({good, neutral, bad, total}) => {
+const StatisticLine = ({text, value}) => {
+  return(
+    <>
+      <p>{text} {value}</p>
+    </>
+  )
+}
+
+const Statistics = ({good, neutral, bad, average, total}) => {
   if(total === 0){
     return (
       <p>
@@ -16,12 +24,12 @@ const Statistics = ({good, neutral, bad, total}) => {
   }
   return (
     <>
-      <p>good {good}</p>
-      <p>neutral {neutral}</p>
-      <p>bad {bad}</p>
-      <p>all {total}</p>
-      <p>average {(good*1 + neutral*0 + bad*-1)/total}</p>
-      <p>positive {good/total} %</p>
+      <StatisticLine text="good" value ={good} />
+      <StatisticLine text="neutral" value ={neutral} />
+      <StatisticLine text="bad" value ={bad} />
+      <StatisticLine text="all" value ={total} />
+      <StatisticLine text="average" value ={average} />
+      <StatisticLine text="positive" value ={good/total} />
     </>
   )
 }
@@ -33,6 +41,7 @@ const App = () => {
   const [bad, setBad] = useState(0)
   
   const total = good + neutral + bad
+  const average = (good*1 + neutral*0 + bad*-1)/total
   return (
     <>
       <div>
@@ -43,7 +52,7 @@ const App = () => {
       </div>
       <div>
         <h1>statistics</h1>
-        <Statistics good={good} neutral={neutral} bad={bad} total={total} />
+        <Statistics good={good} neutral={neutral} bad={bad} average={average} total={total} />
       </div>
     </>
   )
