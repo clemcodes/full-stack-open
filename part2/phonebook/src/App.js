@@ -1,12 +1,7 @@
 import { useState } from 'react'
-
-const Person = ({ele}) => {
-  return (
-    <>
-      <div>{ele.name} {ele.number}</div>
-    </>
-  )
-}
+import { Filter } from './components/Filter'
+import { PersonForm } from './components/PersonForm'
+import { Persons } from './components/Persons'
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -25,43 +20,31 @@ const App = () => {
     e.preventDefault()
     const newPerson = {
       name: newName,
-      number: newNum
+      number: newNum,
+      id: persons.length + 1
     }
+
     const isNew = JSON.stringify(persons).indexOf(JSON.stringify(newPerson)) < 0
+
     if(isNew){
       setPersons(persons.concat(newPerson))
-      setNewName('')
-      setNewNum('')
     } else {
       alert(`${newName} is already added to phonebook`)
-      setNewName('')
-      setNewNum('')
     }
-    
+    setNewName('')
+    setNewNum('')
   }
 
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>filter shown with <input type="search" value={search} onChange={(e) => setSearch(e.target.value)}/></div>
-      <h2>Add a new</h2>
-      <form onSubmit={addPerson}>
-        <div>
-          name: <input value={newName} onChange={(e) => setNewName(e.target.value)} />
-        </div>
-        <div>
-          number: <input value={newNum} onChange={(e) => setNewNum(e.target.value)} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-        <div>
-          {search 
-            ? searchResults.map(ele => <Person key={ele.name} ele={ele}/>) 
-            : persons.map(ele => <Person key={ele.name} ele={ele}/>)}
-        </div>
+      <Filter search={search} onChange={(e) => setSearch(e.target.value)} />
+      
+      <h3>Add a new</h3>
+      <PersonForm addPerson={addPerson} handleNameChange={(e) => setNewName(e.target.value)} handleNumChange={(e) => setNewNum(e.target.value)} />
+      
+      <h3>Numbers</h3>
+      <Persons search={search} searchResults={searchResults} persons={persons} />
     </div>
   )
 }
