@@ -9,14 +9,22 @@ const App = () => {
   const handleNoteChange = (e) => {
     setNewName(e.target.value)
   }
-
+  
+  
   const addPerson = (e) => {
     e.preventDefault()
     const newPerson = {
       name: newName
     }
-    setPersons(persons.concat(newPerson))
-    setNewName('')
+    const isNew = JSON.stringify(persons).indexOf(JSON.stringify(newPerson)) < 0
+    if(isNew){
+      setPersons(persons.concat(newPerson))
+      setNewName('')
+    } else {
+      alert(`${newName} is already added to phonebook`)
+      setNewName('')
+    }
+    
   }
 
   return (
@@ -32,7 +40,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
         <div>
-          {persons.map(person => <div>{person.name}</div>)}
+          {persons.map(person => <div key={person.name}>{person.name}</div>)}
         </div>
     </div>
   )
