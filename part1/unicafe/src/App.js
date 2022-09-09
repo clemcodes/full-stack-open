@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-const Button = ({name}) => {
+const Button = ({name, onClick}) => {
   return (
-    <button value={name}>{name}</button>
+    <button onClick={onClick} value={name}>{name}</button>
   )
 }
 
@@ -60,9 +60,9 @@ const App = () => {
     <>
       <div>
         <h1>give feedback</h1>
-        <Button name="good"/>
-        <Button name="neutral"/>
-        <Button name="bad"/>
+        <Button name="good" onClick={() => setGood(good+1)}/>
+        <Button name="neutral" onClick={() => setNeutral(neutral+1)}/>
+        <Button name="bad" onClick={() => setBad(bad+1)}/>
       </div>
       <div>
         <h1>statistics</h1>
