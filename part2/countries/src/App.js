@@ -20,8 +20,11 @@ const App = () => {
         {
           countries.length > 10 ? <div>Too many matches, specify another filter</div>
           : countries.length === 1 ? <Country country={countries[0]} />
-          : <div>{countries.map(country => <div key={country.name.common}>{country.name.common}</div>)}</div>
-        }
+          : <>{countries.map(country => <CountryToggle key={country.name.common} 
+                                                       name={country.name.common}
+                                                       country={country} />)
+                                                       }</>
+        }      
       </>
       
     )
@@ -40,6 +43,16 @@ const App = () => {
           </ul>
           <div>{country.flag}</div>    
         </div>
+      </>
+    )
+  }
+
+  const CountryToggle = ({name, country}) => {
+    const [show, setShow] = useState(false)
+    return (
+      <>
+        <div>{name} <button onClick={() => setShow(true)}>show</button></div> 
+         { show ? <Country country={country}/> : '' }
       </>
     )
   }
