@@ -29,10 +29,12 @@ const App = () => {
       id: persons.length + 1
     }
 
-    const isNew = JSON.stringify(persons).indexOf(JSON.stringify(newPerson)) < 0
+    const isRegistered = persons.find(person => person.name === newPerson.name && person.number ===newPerson.number)
 
-    if(isNew){
-      setPersons(persons.concat(newPerson))
+    if(!isRegistered){
+      axios.post('http://localhost:3001/persons', newPerson)
+           .then(res => setPersons(persons.concat(res.data)))
+
     } else {
       alert(`${newName} is already added to phonebook`)
     }

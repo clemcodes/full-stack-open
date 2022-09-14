@@ -12,8 +12,8 @@ export const Persons = ({search, searchResults, persons}) => {
   return (
     <div>
         {search 
-        ? searchResults.map(ele => <Person key={ele.name} ele={ele}/>) 
-        : persons.map(ele => <Person key={ele.name} ele={ele}/>)}
+        ? searchResults.map(ele => <Person key={ele.id} ele={ele}/>) 
+        : persons.map(ele => <Person key={ele.id} ele={ele}/>)}
     </div>
   )
 }
