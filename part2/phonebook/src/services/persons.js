@@ -13,4 +13,8 @@ const deleteItem = id => {
     return axios.delete(`${baseUrl}/${id}`)
   }
 
-export default { getAll, create, deleteItem }
+const replaceNumber = (id, changedNumber) => {
+  return axios.put(`${baseUrl}/${id}`, changedNumber)
+}
+
+export default { getAll, create, deleteItem, replaceNumber }

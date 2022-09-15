@@ -29,14 +29,16 @@ const App = () => {
       id: persons.length + 1
     }
 
-    const isRegistered = persons.find(person => person.name === newPerson.name && person.number ===newPerson.number)
+    const existedPerson = persons.find(person => person.name === newName)
+    const changedNumber = {...existedPerson, number:newNum}
 
-    if(!isRegistered){
+    if(!existedPerson){
       personService.create(newPerson)
-           .then(res => setPersons(persons.concat(res.data)))
+                   .then(res => setPersons(persons.concat(res.data)))
 
-    } else {
-      alert(`${newName} is already added to phonebook`)
+    } else if(existedPerson && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+      personService.replaceNumber(existedPerson.id, changedNumber)
+                   .then(res => setPersons(persons.map(person => person.id !== existedPerson.id ? person : res.data)))
     }
     setNewName('')
     setNewNum('')
