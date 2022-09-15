@@ -42,6 +42,14 @@ const App = () => {
     setNewNum('')
   }
 
+  const deletePerson = (e, id) => {
+    e.preventDefault()
+    if(window.confirm('Are you sure you want to delete?')){
+      personService.deleteItem(id)
+      setPersons(persons.filter(person => person.id !== id))
+    }
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -51,7 +59,7 @@ const App = () => {
       <PersonForm addPerson={addPerson} handleNameChange={(e) => setNewName(e.target.value)} handleNumChange={(e) => setNewNum(e.target.value)} />
       
       <h3>Numbers</h3>
-      <Persons search={search} searchResults={searchResults} persons={persons} />
+      <Persons search={search} searchResults={searchResults} persons={persons} deletePerson={deletePerson}/>
     </div>
   )
 }
