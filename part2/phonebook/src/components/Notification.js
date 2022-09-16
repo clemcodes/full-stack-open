@@ -1,8 +1,8 @@
 import React from 'react'
 
-export const Notification = ({message}) => {
+export const Notification = ({message, messageIsFailure}) => {
     const notificationStyle = {
-        color: 'green',
+        color: messageIsFailure ? 'red' : 'green',
         background: 'lightgrey',
         fontSize: 20,
         borderStyle: 'solid',
@@ -16,6 +16,7 @@ export const Notification = ({message}) => {
     }
 
   return (
-    <div style={notificationStyle}>{message}</div>
+        <div style={notificationStyle}>{message}</div>
+      
   )
 }

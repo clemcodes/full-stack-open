@@ -10,7 +10,8 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [search, setSearch] = useState('')
-  const [successMessage, setSuccessMessage] = useState(null)
+  const [message, setMessage] = useState(null)
+  const [messageIsFailure, setMessageIsFailure] = useState(null)
   
   const searchResults = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
   
@@ -38,17 +39,27 @@ const App = () => {
       personService.create(newPerson)
                    .then(res => setPersons(persons.concat(res.data)))
       
-      setSuccessMessage(`Added ${newName}`)
+      setMessage(`Added ${newName}`)
+      setMessageIsFailure(false)
       setTimeout(() => {
-        setSuccessMessage(null)
+        setMessage(null)
       }, 5000)
 
     } else if(existedPerson && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
       personService.replaceNumber(existedPerson.id, changedNumber)
                    .then(res => setPersons(persons.map(person => person.id !== existedPerson.id ? person : res.data)))
-      setSuccessMessage(`${newName}'s number updated to ${newNum}`)
+                   .catch(err => {
+                     setMessageIsFailure(true)
+                     setMessage(`Information of ${newName} has already been removed from server`)
+                     setTimeout(() => {
+                      setMessage(null)
+                      }, 5000)
+                    }
+                   )
+      setMessage(`${newName}'s number updated to ${newNum}`)
+      setMessageIsFailure(false)
       setTimeout(() => {
-        setSuccessMessage(null)
+        setMessage(null)
       }, 5000)
     }
     setNewName('')
@@ -66,7 +77,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={successMessage}/>
+      <Notification message={message} messageIsFailure={messageIsFailure}/>
       <Filter search={search} onChange={(e) => setSearch(e.target.value)} />
       
       <h3>Add a new</h3>
