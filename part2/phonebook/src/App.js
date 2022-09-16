@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Filter } from './components/Filter'
 import { PersonForm } from './components/PersonForm'
 import { Persons } from './components/Persons'
+import { Notification } from './components/Notification'
 import personService from './services/persons'
 
 const App = () => {
@@ -9,6 +10,7 @@ const App = () => {
   const [newName, setNewName] = useState('')
   const [newNum, setNewNum] = useState('')
   const [search, setSearch] = useState('')
+  const [successMessage, setSuccessMessage] = useState(null)
   
   const searchResults = persons.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
   
@@ -35,10 +37,19 @@ const App = () => {
     if(!existedPerson){
       personService.create(newPerson)
                    .then(res => setPersons(persons.concat(res.data)))
+      
+      setSuccessMessage(`Added ${newName}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
 
     } else if(existedPerson && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
       personService.replaceNumber(existedPerson.id, changedNumber)
                    .then(res => setPersons(persons.map(person => person.id !== existedPerson.id ? person : res.data)))
+      setSuccessMessage(`${newName}'s number updated to ${newNum}`)
+      setTimeout(() => {
+        setSuccessMessage(null)
+      }, 5000)
     }
     setNewName('')
     setNewNum('')
@@ -55,6 +66,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={successMessage}/>
       <Filter search={search} onChange={(e) => setSearch(e.target.value)} />
       
       <h3>Add a new</h3>
