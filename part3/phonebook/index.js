@@ -1,6 +1,6 @@
-const { response } = require('express')
 const express = require('express')
 const app = express()
+const morgan = require('morgan')
 
 app.use(express.json())
 
@@ -27,11 +27,11 @@ let persons = [
     }
 ]
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', morgan('tiny'), (req, res) => {
     res.json(persons)
 })
 
-app.get('/api/persons/:id', (req, res) => {
+app.get('/api/persons/:id', morgan('tiny'), (req, res) => {
     const id = Number(req.params.id)
     const person = persons.find(person => person.id === id)
 
@@ -42,11 +42,11 @@ app.get('/api/persons/:id', (req, res) => {
     }
 })
 
-app.get('/api/persons', (req, res) => {
+app.get('/api/persons', morgan('tiny'), (req, res) => {
     res.json(persons)
 })
 
-app.post('/api/persons', (req, res) => {
+app.post('/api/persons', morgan('tiny'), (req, res) => {
     const body = req.body
 
     if (!body.name || !body.number) {
@@ -71,14 +71,14 @@ app.post('/api/persons', (req, res) => {
     res.json(person)
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', morgan('tiny'), (req, res) => {
     const id = Number(req.params.id)
     persons = persons.filter(person => person.id !== id)
 
     res.status(204).end()
 })
 
-app.get('/info', (req, res) => {
+app.get('/info', morgan('tiny'), (req, res) => {
     res.send(
         `<p>Phone book has infor for ${persons.length}</p>
          <p>${new Date()}</p>
