@@ -47,11 +47,15 @@ app.post('/api/persons', morgan(':body'), (req, res) => {
   res.json(person)
 })
 
-app.delete('/api/persons/:id', (req, res) => {
+app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then(result => {
+        if(result === null) {
+            res.status(404).end()
+        }
         res.status(204).end()
-  })
+    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
@@ -61,6 +65,17 @@ app.get('/info', (req, res) => {
         `
   )
 })
+
+const errorHandler = (error, req, res, next) => {
+    console.log('error message', error.message)
+
+    if(error.name === 'CastError'){
+        return res.status(400).send({ error:'malformatted id' })
+    }
+    next(error)
+}
+
+app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
