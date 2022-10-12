@@ -47,6 +47,21 @@ app.post('/api/persons', morgan(':body'), (req, res) => {
   res.json(person)
 })
 
+app.put('/api/persons/:id',(req, res, next) => {
+    const person = {
+        name: req.body.name,
+        number: req.body.number
+    }
+    Person.findByIdAndUpdate(req.params.id, person, { new:true })
+        .then(updatedPerson => {
+            if(updatedPerson === null) {
+                res.status(404).end()
+            }
+            res.json(updatedPerson)
+        })
+        .catch(error => next(error))
+})
+
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
     .then(result => {

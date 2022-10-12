@@ -28,8 +28,7 @@ const App = () => {
     e.preventDefault()
     const newPerson = {
       name: newName,
-      number: newNum,
-      id: persons.length + 1
+      number: newNum
     }
 
     const existedPerson = persons.find(person => person.name === newName)
