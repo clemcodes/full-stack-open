@@ -19,15 +19,16 @@ app.get('/api/persons', (req, res) => {
   })
 })
 
-app.get('/api/persons/:id', (req, res) => {
-  const id = Number(req.params.id)
-  const person = persons.find((person) => person.id === id)
-
-  if (person) {
-    res.json(person)
-  } else {
-    res.sendStatus(404)
-  }
+app.get('/api/persons/:id', (req, res, next) => {
+  Person.findById(req.params.id)
+    .then(person => {
+        if(person){
+            res.json(person)
+        } else {
+            res.sendStatus(404)
+        }
+    })
+    .catch(error => next(error))
 })
 
 app.post('/api/persons', morgan(':body'), (req, res) => {
@@ -54,31 +55,35 @@ app.put('/api/persons/:id',(req, res, next) => {
     }
     Person.findByIdAndUpdate(req.params.id, person, { new:true })
         .then(updatedPerson => {
-            if(updatedPerson === null) {
-                res.status(404).end()
+            if(person) {
+                res.json(updatedPerson)
             }
-            res.json(updatedPerson)
+            res.status(404).end()
+            
         })
         .catch(error => next(error))
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
   Person.findByIdAndRemove(req.params.id)
-    .then(result => {
-        if(result === null) {
-            res.status(404).end()
+    .then(person => {
+        if(person) {
+            res.status(204).end()
         }
-        res.status(204).end()
+            res.sendStatus(404)
+        
     })
     .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
-  res.send(
-    `<p>Phone book has infor for ${persons.length}</p>
-         <p>${new Date()}</p>
-        `
-  )
+    Person.count({}, function(err, count){
+        res.send(
+            `<p>Phone book has info for ${count} people</p>
+                <p>${new Date()}</p>
+            `
+        )
+    })
 })
 
 const errorHandler = (error, req, res, next) => {
