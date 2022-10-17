@@ -40,20 +40,30 @@ app.post('/api/persons', morgan(':body'), (req, res) => {
     })
   }
 
-  const person = new Person({
-    name: body.name,
-    number: body.number,
+  Person.find({name:body.name}, function(err, docs){
+    if(docs.length){
+      return res.status(400).json({
+        error: 'Name exists already',
+      })
+    } else {
+        const person = new Person({
+          name: body.name,
+          number: body.number,
+        })
+      
+        return person.save()
+          .then(() => {
+            return res.json(person)
+        })
+          .catch(error => {
+              return res.status(400).json({
+                error: error.message
+              })
+          })
+    }
   })
 
-  return person.save()
-    .then(() => {
-    return res.json(person)
-  })
-    .catch(error => {
-      return res.status(400).json({
-        error: error.message
-      })
-    })
+  
 })
 
 app.put('/api/persons/:id',(req, res, next) => {
@@ -77,8 +87,9 @@ app.delete('/api/persons/:id', (req, res, next) => {
     .then(person => {
         if(person) {
             res.status(204).end()
-        }
+        } else{
             res.sendStatus(404)
+        }
         
     })
     .catch(error => next(error))

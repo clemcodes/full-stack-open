@@ -30,47 +30,23 @@ const App = () => {
       name: newName,
       number: newNum
     }
-
-    const existedPerson = persons.find(person => person.name === newName)
-    const changedNumber = {...existedPerson, number:newNum}
-
-    if(!existedPerson){
-      personService.create(newPerson)
-                   .then(res => {
-                      setPersons(persons.concat(res.data))
-                      setMessage(`Added ${newName}`)
-                      setMessageIsFailure(false)
-                  })
-                  .catch(error => {
-                    console.log(error)
-                    setMessage(error.response.data.error)
-                    setMessageIsFailure(true)
-                  })
-      
-      
+    personService.create(newPerson)
+                  .then(res => {
+                    setPersons(persons.concat(res.data))
+                    setMessage(`Added ${newName}`)
+                    setMessageIsFailure(false)
+                })
+                .catch(error => {
+                  setMessage(error.response.data.error)
+                  setMessageIsFailure(true)
+                })
+                    
       setTimeout(() => {
         setMessage(null)
       }, 5000)
 
-    } else if(existedPerson && window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
-      personService.replaceNumber(existedPerson.id, changedNumber)
-                   .then(res => setPersons(persons.map(person => person.id !== existedPerson.id ? person : res.data)))
-                   .catch(err => {
-                     setMessageIsFailure(true)
-                     setMessage(`Information of ${newName} has already been removed from server`)
-                     setTimeout(() => {
-                      setMessage(null)
-                      }, 5000)
-                    }
-                   )
-      setMessage(`${newName}'s number updated to ${newNum}`)
-      setMessageIsFailure(false)
-      setTimeout(() => {
-        setMessage(null)
-      }, 5000)
-    }
-    setNewName('')
-    setNewNum('')
+      setNewName('')
+      setNewNum('')
   }
 
   const deletePerson = (e, id) => {
