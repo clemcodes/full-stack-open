@@ -36,10 +36,18 @@ const App = () => {
 
     if(!existedPerson){
       personService.create(newPerson)
-                   .then(res => setPersons(persons.concat(res.data)))
+                   .then(res => {
+                      setPersons(persons.concat(res.data))
+                      setMessage(`Added ${newName}`)
+                      setMessageIsFailure(false)
+                  })
+                  .catch(error => {
+                    console.log(error)
+                    setMessage(error.response.data.error)
+                    setMessageIsFailure(true)
+                  })
       
-      setMessage(`Added ${newName}`)
-      setMessageIsFailure(false)
+      
       setTimeout(() => {
         setMessage(null)
       }, 5000)
