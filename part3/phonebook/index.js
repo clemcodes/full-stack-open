@@ -44,8 +44,16 @@ app.post('/api/persons', morgan(':body'), (req, res) => {
     name: body.name,
     number: body.number,
   })
-  person.save()
-  res.json(person)
+
+  return person.save()
+    .then(() => {
+    return res.json(person)
+  })
+    .catch(error => {
+      return res.status(400).json({
+        error: error.message
+      })
+    })
 })
 
 app.put('/api/persons/:id',(req, res, next) => {
