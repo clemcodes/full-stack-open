@@ -1,4 +1,4 @@
-PUT http://localhost:3001/api/persons/63469a6c3acf78a928405571
+PUT https://hidden-caverns-90730.herokuapp.com/api/persons/63469a6c3acf78a928405571
 Content-Type: application/json
 
 {
