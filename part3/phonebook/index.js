@@ -7,61 +7,62 @@ const Person = require('./models/person')
 
 app.use(express.json())
 app.use(morgan('tiny'))
-morgan.token('body', function (req, res) {
-  return JSON.stringify(req.body)
+morgan.token('body', function (req) {
+    return JSON.stringify(req.body)
 })
 app.use(cors())
 app.use(express.static('build'))
 
 app.get('/api/persons', (req, res) => {
-  Person.find({}).then((persons) => {
-    res.json(persons)
-  })
+    Person.find({}).then((persons) => {
+        res.json(persons)
+    })
 })
 
 app.get('/api/persons/:id', (req, res, next) => {
-  Person.findById(req.params.id)
-    .then(person => {
-        if(person){
-            res.json(person)
-        } else {
-            res.sendStatus(404)
-        }
-    })
-    .catch(error => next(error))
+    Person.findById(req.params.id)
+        .then(person => {
+            if(person){
+                res.json(person)
+            } else {
+                res.sendStatus(404)
+            }
+        })
+        .catch(error => next(error))
 })
 
 app.post('/api/persons', morgan(':body'), (req, res) => {
-  const body = req.body
+    const body = req.body
+    console.log(body)
 
-  if (!body.name || !body.number) {
-    return res.status(400).json({
-      error: 'The name or number is missing',
-    })
-  }
-
-  Person.find({name:body.name}, function(err, docs){
-    if(docs.length){
-      return res.status(400).json({
-        error: 'Name exists already',
-      })
-    } else {
-        const person = new Person({
-          name: body.name,
-          number: body.number,
+    if (!body.name || !body.number) {
+        return res.status(400).json({
+            error: 'The name or number is missing',
         })
-      
-        return person.save()
-          .then(() => {
-            return res.json(person)
-        })
-          .catch(error => {
-              return res.status(400).json({
-                error: error.message
-              })
-          })
     }
-  })
+
+    Person.find({name:body.name}, function(err, docs){
+        if(docs.length){
+            return res.status(400).json({
+                error: 'Name exists already',
+            })
+        } else {
+            const person = new Person({
+                name: body.name,
+                number: body.number,
+            })
+      
+            return person.save()
+                .then(() => {
+                    return res.json(person)
+                })
+                .catch(error => {
+                    return res.status(400).json({
+                        error: error.message
+                    })
+                })
+        }
+    })
 
   
 })
@@ -83,16 +84,16 @@ app.put('/api/persons/:id',(req, res, next) => {
 })
 
 app.delete('/api/persons/:id', (req, res, next) => {
-  Person.findByIdAndRemove(req.params.id)
-    .then(person => {
-        if(person) {
-            res.status(204).end()
-        } else{
-            res.sendStatus(404)
-        }
+    Person.findByIdAndRemove(req.params.id)
+        .then(person => {
+            if(person) {
+                res.status(204).end()
+            } else{
+                res.sendStatus(404)
+            }
         
-    })
-    .catch(error => next(error))
+        })
+        .catch(error => next(error))
 })
 
 app.get('/info', (req, res) => {
@@ -118,5 +119,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
+    console.log(`Server running on port ${PORT}`)
 })

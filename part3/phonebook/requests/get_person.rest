@@ -1,6 +1,6 @@
 # Get everyone
-GET https://hidden-caverns-90730.herokuapp.com/api/persons
+GET http://localhost:3001/api/persons
 
 ###
 # Get a specific person
-GET https://hidden-caverns-90730.herokuapp.com/api/persons/6346862d068c526179135087
+GET http://localhost:3001/api/persons/6346862d068c526179135087

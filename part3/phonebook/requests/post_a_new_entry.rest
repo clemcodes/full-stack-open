@@ -1,8 +1,8 @@
-POST https://hidden-caverns-90730.herokuapp.com/api/persons
+POST http://localhost:3001/api/persons
 Content-Type: application/json
 
 {
-    "name": "Clem",
-    "number":1234567
+    "name": "Clemmie",
+    "number":"123-634736274"
 }
 
