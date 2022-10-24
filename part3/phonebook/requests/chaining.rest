@@ -1,0 +1,18 @@
+@baseUrl = http://localhost:3001
+
+GET {{baseUrl}}/api/persons
+
+###
+# @name persons
+POST {{baseUrl}}/api/persons
+Content-Type: application/json
+
+{
+    "name": "Clem",
+    "number":"123-634736274"
+}
+
+###
+@userId = {{persons.response.body.id}}
+
+DELETE {{baseUrl}}/api/persons/{{userId}}
