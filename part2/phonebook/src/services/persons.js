@@ -14,7 +14,7 @@ const deleteItem = id => {
   }
 
 const replaceNumber = (id, changedNumber) => {
-  return axios.put(`${baseUrl}/${id}`, changedNumber)
+  return axios.patch(`${baseUrl}/${id}`, { number:changedNumber })
 }
 
 const exportedObject = { 

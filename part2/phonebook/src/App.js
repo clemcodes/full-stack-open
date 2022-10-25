@@ -57,6 +57,19 @@ const App = () => {
     }
   }
 
+  const editPerson = (number, id) => {
+    personService.replaceNumber(id, number)
+                  .then(res => {
+                    setPersons(persons.concat(res.data))
+                    setMessage('number updated')
+                    setMessageIsFailure(false)
+                  })
+                  .catch(error => {
+                    setMessage(error.response.data.error)
+                    setMessageIsFailure(true)
+                  })
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -67,7 +80,12 @@ const App = () => {
       <PersonForm addPerson={addPerson} handleNameChange={(e) => setNewName(e.target.value)} handleNumChange={(e) => setNewNum(e.target.value)} />
       
       <h3>Numbers</h3>
-      <Persons search={search} searchResults={searchResults} persons={persons} deletePerson={deletePerson}/>
+      <Persons 
+        search={search} 
+        searchResults={searchResults} 
+        persons={persons} 
+        deletePerson={deletePerson}
+        editPerson={editPerson}/>
     </div>
   )
 }
