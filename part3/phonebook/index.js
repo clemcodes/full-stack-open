@@ -67,17 +67,15 @@ app.post('/api/persons', morgan(':body'), (req, res) => {
   
 })
 
-app.put('/api/persons/:id',(req, res, next) => {
-    const person = {
-        name: req.body.name,
-        number: req.body.number
-    }
-    Person.findByIdAndUpdate(req.params.id, person, { new:true })
+app.patch('/api/persons/:id',(req, res, next) => {
+    Person.findByIdAndUpdate(req.params.id, {number: req.body.number}, { new:true, runValidators: true })
         .then(updatedPerson => {
-            if(person) {
+            if(updatedPerson) {
                 res.json(updatedPerson)
+            } else {
+                res.status(404).end()
             }
-            res.status(404).end()
+            
             
         })
         .catch(error => next(error))
@@ -111,6 +109,8 @@ const errorHandler = (error, req, res, next) => {
 
     if(error.name === 'CastError'){
         return res.status(400).send({ error:'malformatted id' })
+    }else if(error.name === 'ValidationError'){
+        return res.status(400).send({ error:error.message })
     }
     next(error)
 }
