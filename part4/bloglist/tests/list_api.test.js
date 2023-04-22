@@ -13,10 +13,10 @@ const initialBlog = {
     id: '635ab00b1b54a87a1433502f'
   }
 
-  beforeEach(async () => {
+beforeEach(async () => {
     await Blog.deleteMany();
     await new Blog(initialBlog).save()
-  });
+});
 
 test('it returns the correct amount of blog in JSON format', async () => {
     const response = await api.get('/api/blogs')
@@ -55,6 +55,24 @@ test('a blog can be added', async () => {
     expect(contents).toContain(
         'test new blog'
     )
+})
+
+test('blog without likes default to 0', async () => {
+    const newBlogWithoutLikes = 
+        {
+            title: 'test blog without likes',
+            author: 'test new author',
+            url: 'test-new-url'
+          }
+
+    await api.post('/api/blogs')
+             .send(newBlogWithoutLikes)
+        
+
+      let blogsAtEnd = await Blog.find({})
+
+    expect(blogsAtEnd[1].likes).toBe(0)
+
 })
 
 afterAll(async () => {
