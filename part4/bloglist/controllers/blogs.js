@@ -9,15 +9,21 @@ blogsRouter.get('/', async (req, res) => {
 
 blogsRouter.post('/', async (req, res) => {
   const body = req.body
-  const blog = await new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes || 0
-  })
 
-  const savedBlog = await blog.save()
-  res.status(201).json(savedBlog)
+  if(!req.body.title || !req.body.url) {
+    res.status(400).send({ error: 'bad request' })
+  } else {
+    const blog = await new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes || 0
+    })
+  
+  
+    const savedBlog = await blog.save()
+    res.status(201).json(savedBlog)
+  }
 })
 
 module.exports = blogsRouter
