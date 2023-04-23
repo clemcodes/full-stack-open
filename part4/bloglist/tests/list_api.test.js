@@ -136,9 +136,21 @@ describe('deletion of a blog', () => {
 
 describe('update a blog', () => {
 
+    test('update the number of likes for a blog post', async () => {
+        const blogsAtStart = await Blog.find({})
+        const blogToUpdate = blogsAtStart[0]
+        const newLikes = 108
+        
+        await api.put(`/api/blogs/${blogToUpdate.id}`)
+                 .send({ likes: newLikes })
+                 .expect(200)
+
+
+        let blogsAtEnd = await Blog.find({})
+
+        expect(blogsAtEnd[0].likes).toEqual(newLikes)
+    })
 })
-
-
 
 
 afterAll(async () => {
