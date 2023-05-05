@@ -13,7 +13,7 @@ blogsRouter.post('/', async (req, res) => {
   if(!req.body.title || !req.body.url) {
     res.status(400).send({ error: 'bad request' })
   } else {
-    const blog = await new Blog({
+    const blog = new Blog({
       title: body.title,
       author: body.author,
       url: body.url,
