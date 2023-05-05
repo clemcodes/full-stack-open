@@ -40,4 +40,58 @@ describe("users", () => {
         const usernames = usersAtEnd.map(u => u.username)
         expect(usernames).toContain(newUser.username)
     })
+
+    test('creation fails with duplicated username', async () => {
+        const usersAtStart = await User.find({})
+
+        const newUser = {
+          username: 'root',
+          name: 'Superuser',
+          password: 'salainen',
+        }
+
+        const result = await api
+          .post('/api/users')
+          .send(newUser)
+          .expect(400)
+
+        const usersAtEnd = await User.find({})
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+      })
+
+    test('creation fails with username less than 3 characters', async () => {
+        const usersAtStart = await User.find({})
+
+        const newUser = {
+            username: 'ro',
+            name: 'Superuser',
+            password: 'salainen',
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+
+        const usersAtEnd = await User.find({})
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
+
+    test('creation fails with password less than 3 characters', async () => {
+        const usersAtStart = await User.find({})
+
+        const newUser = {
+            username: 'newuser',
+            name: 'Superuser',
+            password: 'sa',
+        }
+
+        const result = await api
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+
+        const usersAtEnd = await User.find({})
+        expect(usersAtEnd).toHaveLength(usersAtStart.length)
+    })
 })
