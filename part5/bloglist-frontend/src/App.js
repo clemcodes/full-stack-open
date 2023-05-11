@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import { CreateBlog } from './components/CreateBlog'
+import { Notification } from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs'
 
@@ -9,7 +10,11 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [errorMessage, setErrorMessage] = useState(null)
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
+  const [message, setMessage] = useState('')
+  const [messageIsFailure, setMessageIsFailure] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -36,13 +41,32 @@ const App = () => {
       setUsername('')
       setPassword('')
     } catch (exception) {
-      setErrorMessage('Wrong credentials')
+      setMessage('Wrong credentials')
+      setMessageIsFailure(true)
       setUsername('')
       setPassword('')
       setTimeout(() => {
-        setErrorMessage(null)
+        setMessage(null)
       }, 5000)
     }
+  }
+
+  const handleCreate = (e) => {
+    e.preventDefault()
+    const newObj = {
+        title,
+        author,
+        url
+    }
+    blogService.create(newObj)
+    setTitle('')
+    setAuthor('')
+    setUrl('')
+    setMessage('A new blog created!')
+    setMessageIsFailure(false)
+    setTimeout(() => {
+      setMessage(null)
+    }, 5000)
   }
 
   const handleLogout = (e) => {
@@ -55,7 +79,7 @@ const App = () => {
   const loginForm = () => {
     return (
       <form onSubmit={handleSubmit}>
-        {errorMessage}
+        {message && <Notification message={message} messageIsFailure={messageIsFailure} />}
         <h1>Log in to application</h1>
         <div><label>username: <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} /></label></div>
         <div><label>password: <input  type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label></div>
@@ -69,9 +93,10 @@ const App = () => {
       <div>
         {!user && loginForm()}
         <h2>blogs</h2>
+        {message && <Notification message={message} messageIsFailure={messageIsFailure} />}
         <p>{user.name} logged in</p>
         <button onClick={handleLogout}>logout</button>
-        <CreateBlog />
+        <CreateBlog handleCreate={handleCreate} title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} />
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
