@@ -10,9 +10,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState('')
   const [messageIsFailure, setMessageIsFailure] = useState(null)
 
@@ -20,7 +17,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
-  }, [blogs])
+  }, [])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -51,17 +48,9 @@ const App = () => {
     }
   }
 
-  const handleCreate = (e) => {
-    e.preventDefault()
-    const newObj = {
-        title,
-        author,
-        url
-    }
-    blogService.create(newObj)
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+  const handleCreate = async (blogObject) => {
+    const newBlog = await blogService.create(blogObject)
+    setBlogs(blogs.concat(newBlog))
     setMessage('A new blog created!')
     setMessageIsFailure(false)
     setTimeout(() => {
@@ -82,7 +71,7 @@ const App = () => {
         {message && <Notification message={message} messageIsFailure={messageIsFailure} />}
         <h1>Log in to application</h1>
         <div><label>username: <input type="text" name="username" value={username} onChange={(e) => setUsername(e.target.value)} /></label></div>
-        <div><label>password: <input  type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label></div>
+        <div><label>password: <input type="text" name="password" value={password} onChange={(e) => setPassword(e.target.value)} /></label></div>
         <button>login</button>
       </form>
     )
@@ -96,7 +85,7 @@ const App = () => {
         {message && <Notification message={message} messageIsFailure={messageIsFailure} />}
         <p>{user.name} logged in</p>
         <button onClick={handleLogout}>logout</button>
-        <CreateBlog handleCreate={handleCreate} title={title} author={author} url={url} setTitle={setTitle} setAuthor={setAuthor} setUrl={setUrl} />
+        <CreateBlog createBlog={handleCreate} />
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
