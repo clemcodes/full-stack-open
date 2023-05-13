@@ -15,10 +15,12 @@ const Blog = ({blog}) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title}
+      {blog.title} {blog.author} 
       <button onClick={() => setVisible(!visible)}>{visible ? 'hide' : 'view'}</button>
       <div style={ showWhenVisible }>
-      {blog.author} {blog.url} {blog.likes}
+      <div>{blog.url}</div> 
+      <div>{blog.likes}</div> 
+      <div>{blog.user.name}</div>
       </div>   
     </div>   
   )

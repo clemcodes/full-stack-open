@@ -17,7 +17,7 @@ const App = () => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
     )  
-  }, [])
+  }, [blogs])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -49,8 +49,7 @@ const App = () => {
   }
 
   const handleCreate = async (blogObject) => {
-    const newBlog = await blogService.create(blogObject)
-    setBlogs(blogs.concat(newBlog))
+    await blogService.create(blogObject)
     setMessage('A new blog created!')
     setMessageIsFailure(false)
     setTimeout(() => {
