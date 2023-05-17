@@ -17,8 +17,8 @@ const App = () => {
     blogService.getAll().then(blogs => {
       const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
       setBlogs( sortedBlogs )
-      }
-    )  
+    }
+    )
   }, [blogs])
 
   useEffect(() => {
@@ -33,7 +33,7 @@ const App = () => {
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
-      const userInDb = await loginService.login({username, password})
+      const userInDb = await loginService.login({ username, password })
       window.localStorage.setItem('loggedUser', JSON.stringify(userInDb))
       blogService.setToken(userInDb.token)
       setUser(userInDb)
@@ -90,7 +90,7 @@ const App = () => {
         {blogs.map(blog =>
           <Blog key={blog.id} blog={blog} />
         )}
-    </div>
+      </div>
     )
   }
 
