@@ -25,14 +25,21 @@ const Blog = ({blog}) => {
     blogService.update(blog.id, updatedBlog)
   }
 
+  const handleRemove = () => {
+    if(window.confirm("Remov blog You're NOT gonna need it!")){
+      blogService.remove(blog.id)
+    }
+  }
+
   return (
     <div style={blogStyle}>
       {blog.title} {blog.author} 
       <button onClick={() => setVisible(!visible)}>{visible ? 'hide' : 'view'}</button>
       <div style={ showWhenVisible }>
       <div>{blog.url}</div> 
-      <div>{blog.likes}<button onClick={handleLikes}>like</button></div> 
+      <div>likes {blog.likes}<button onClick={handleLikes}>like</button></div> 
       <div>{blog.user.name}</div>
+      <div><button onClick={handleRemove}>Remove</button></div> 
       </div>   
     </div>   
   )

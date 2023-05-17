@@ -38,14 +38,9 @@ blogsRouter.post('/', userExtractor, async (req, res, next) => {
 
 blogsRouter.delete('/:id', userExtractor, async (req, res) => {
 
-  const blog = await Blog.findById(req.params.id)
-
-  if(blog.user.toString() !== req.user.id.toString()){
-    res.status(401).json({ error: 'unauthorized operation' })
-  } 
-
   await Blog.findByIdAndRemove(req.params.id)
   res.status(204).end()
+  
 })
 
 blogsRouter.put('/:id', userExtractor, async (req, res, next) => {
