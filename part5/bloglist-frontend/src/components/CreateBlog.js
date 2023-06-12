@@ -11,7 +11,7 @@ export const CreateBlog = (props) => {
     props.createBlog({
       title,
       author,
-      url
+      url,
     })
     setTitle('')
     setAuthor('')
@@ -20,11 +20,11 @@ export const CreateBlog = (props) => {
   }
 
   const hideWhenVisible = {
-    display: visible ? 'none' : ''
+    display: visible ? 'none' : '',
   }
 
   const showWhenVisible = {
-    display: visible ? '' : 'none'
+    display: visible ? '' : 'none',
   }
 
   return (
@@ -34,12 +34,47 @@ export const CreateBlog = (props) => {
       </div>
       <form style={showWhenVisible} onSubmit={handleCreate}>
         <h1>create new</h1>
-        <div><label>title: <input type="text" name="title" value={title} onChange={(e) => setTitle(e.target.value)} /></label></div>
-        <div><label>author: <input type="text" name="author" value={author} onChange={(e) => setAuthor(e.target.value)} /></label></div>
-        <div><label>url: <input type="text" name="url" value={url} onChange={(e) => setUrl(e.target.value)} /></label></div>
+        <div>
+          <label>
+            title:{' '}
+            <input
+              type="text"
+              name="title"
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              placeholder="title"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            author:{' '}
+            <input
+              type="text"
+              name="author"
+              value={author}
+              onChange={(e) => setAuthor(e.target.value)}
+              placeholder="author"
+            />
+          </label>
+        </div>
+        <div>
+          <label>
+            url:{' '}
+            <input
+              type="text"
+              name="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="url"
+            />
+          </label>
+        </div>
         <button>create</button>
       </form>
-      <button style={showWhenVisible} onClick={() => setVisible(false)}>cancel</button>
+      <button style={showWhenVisible} onClick={() => setVisible(false)}>
+        cancel
+      </button>
     </div>
   )
 }
