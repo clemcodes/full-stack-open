@@ -1,69 +1,73 @@
-import { useState, useEffect } from "react";
-import Blog from "./components/Blog";
-import { CreateBlog } from "./components/CreateBlog";
-import { Notification } from "./components/Notification";
-import loginService from "./services/login";
-import blogService from "./services/blogs.js";
+import { useState, useEffect } from 'react'
+import Blog from './components/Blog'
+import { CreateBlog } from './components/CreateBlog'
+import { Notification } from './components/Notification'
+import loginService from './services/login'
+import blogService from './services/blogs.js'
 
 const App = () => {
-  const [blogs, setBlogs] = useState([]);
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-  const [message, setMessage] = useState("");
-  const [messageIsFailure, setMessageIsFailure] = useState(null);
+  const [blogs, setBlogs] = useState([])
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [user, setUser] = useState(null)
+  const [message, setMessage] = useState('')
+  const [messageIsFailure, setMessageIsFailure] = useState(null)
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
-      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes);
-      setBlogs(sortedBlogs);
-    });
-  }, [blogs]);
+      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
+      setBlogs(sortedBlogs)
+    })
+  }, [blogs])
 
   useEffect(() => {
-    const loggedUser = window.localStorage.getItem("loggedUser");
+    const loggedUser = window.localStorage.getItem('loggedUser')
     if (loggedUser) {
-      const userJSON = JSON.parse(loggedUser);
-      setUser(userJSON);
-      blogService.setToken(userJSON.token);
+      const userJSON = JSON.parse(loggedUser)
+      setUser(userJSON)
+      blogService.setToken(userJSON.token)
     }
-  }, []);
+  }, [])
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const userInDb = await loginService.login({ username, password });
-      window.localStorage.setItem("loggedUser", JSON.stringify(userInDb));
-      blogService.setToken(userInDb.token);
-      setUser(userInDb);
-      setUsername("");
-      setPassword("");
+      const userInDb = await loginService.login({ username, password })
+      window.localStorage.setItem('loggedUser', JSON.stringify(userInDb))
+      blogService.setToken(userInDb.token)
+      setUser(userInDb)
+      setUsername('')
+      setPassword('')
     } catch (exception) {
-      setMessage("Wrong credentials");
-      setMessageIsFailure(true);
-      setUsername("");
-      setPassword("");
+      setMessage('Wrong credentials')
+      setMessageIsFailure(true)
+      setUsername('')
+      setPassword('')
       setTimeout(() => {
-        setMessage(null);
-      }, 5000);
+        setMessage(null)
+      }, 5000)
     }
-  };
+  }
 
   const handleCreate = async (blogObject) => {
-    await blogService.create(blogObject);
-    setMessage("A new blog created!");
-    setMessageIsFailure(false);
+    await blogService.create(blogObject)
+    setMessage('A new blog created!')
+    setMessageIsFailure(false)
     setTimeout(() => {
-      setMessage(null);
-    }, 5000);
-  };
+      setMessage(null)
+    }, 5000)
+  }
+
+  const updateBlog = (blog) => {
+    blogService.update(blog.id, blog)
+  }
 
   const handleLogout = (e) => {
-    e.preventDefault();
-    window.localStorage.removeItem("loggedUser");
-    setUser(null);
-    blogService.setToken(null);
-  };
+    e.preventDefault()
+    window.localStorage.removeItem('loggedUser')
+    setUser(null)
+    blogService.setToken(null)
+  }
 
   const loginForm = () => {
     return (
@@ -74,7 +78,7 @@ const App = () => {
         <h1>Log in to application</h1>
         <div>
           <label>
-            username:{" "}
+            username:{' '}
             <input
               type="text"
               name="username"
@@ -85,7 +89,7 @@ const App = () => {
         </div>
         <div>
           <label>
-            password:{" "}
+            password:{' '}
             <input
               type="text"
               name="password"
@@ -96,8 +100,8 @@ const App = () => {
         </div>
         <button>login</button>
       </form>
-    );
-  };
+    )
+  }
 
   const loggedInBlogs = () => {
     return (
@@ -111,18 +115,18 @@ const App = () => {
         <button onClick={handleLogout}>logout</button>
         <CreateBlog createBlog={handleCreate} />
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} />
+          <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
         ))}
       </div>
-    );
-  };
+    )
+  }
 
   return (
     <div>
       {!user && loginForm()}
       {user && loggedInBlogs()}
     </div>
-  );
-};
+  )
+}
 
-export default App;
+export default App

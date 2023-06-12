@@ -40,4 +40,29 @@ describe("<Blog />", () => {
 
     expect(screen.getByTestId("invisible")).toHaveStyle("display:block");
   });
+
+  it("calls the event handler twice if button clicked twice", () => {
+    const blog = {
+      title: "test blog",
+      author: "test author",
+      url: "/test-url",
+      likes: 0,
+      user: {
+        name: "jaycee",
+      },
+    };
+
+    const mockUpdateBlog = jest.fn();
+
+    render(<Blog blog={blog} updateBlog={mockUpdateBlog} />);
+
+    const button = screen.getByText("view");
+    userEvent.click(button);
+
+    const likeButton = screen.getByText("like");
+    userEvent.click(likeButton);
+    userEvent.click(likeButton);
+
+    expect(mockUpdateBlog.mock.calls).toHaveLength(2);
+  });
 });
