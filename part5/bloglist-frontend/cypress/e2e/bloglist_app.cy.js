@@ -7,7 +7,7 @@ describe("Blog app", function () {
       password: "secret",
     };
     cy.request("POST", `${Cypress.env("BACKEND")}/users`, user);
-    cy.visit("");
+    cy.visit("/");
   });
 
   it("login form is shown", function () {
@@ -23,6 +23,11 @@ describe("Blog app", function () {
       cy.get("input:last").type("wrong");
       cy.get("#login-button").click();
       cy.contains("Wrong credentials");
+      cy.contains("Wrong credentials").should(
+        "have.css",
+        "color",
+        "rgb(255, 0, 0)"
+      );
     });
 
     it("succeeds with correct credentials", function () {
@@ -30,6 +35,22 @@ describe("Blog app", function () {
       cy.get("input:last").type("secret");
       cy.get("#login-button").click();
       cy.contains("testuser logged in");
+    });
+  });
+
+  describe("When logged in", function () {
+    beforeEach(function () {
+      cy.login({ username: "testuser", password: "secret" });
+    });
+
+    it("A blog can be created", function () {
+      cy.contains("new blog").click();
+      cy.get("#title").type("a note created by cypress");
+      cy.get("#author").type("cypress");
+      cy.get("#url").type("/testurl");
+      cy.get("#create-blog").click();
+
+      cy.contains("A new blog created!");
     });
   });
 });

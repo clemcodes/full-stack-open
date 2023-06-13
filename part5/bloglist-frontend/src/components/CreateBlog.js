@@ -38,6 +38,7 @@ export const CreateBlog = (props) => {
           <label>
             title:{' '}
             <input
+              id="title"
               type="text"
               name="title"
               value={title}
@@ -50,6 +51,7 @@ export const CreateBlog = (props) => {
           <label>
             author:{' '}
             <input
+              id="author"
               type="text"
               name="author"
               value={author}
@@ -62,6 +64,7 @@ export const CreateBlog = (props) => {
           <label>
             url:{' '}
             <input
+              id="url"
               type="text"
               name="url"
               value={url}
@@ -70,7 +73,7 @@ export const CreateBlog = (props) => {
             />
           </label>
         </div>
-        <button>create</button>
+        <button id="create-blog">create</button>
       </form>
       <button style={showWhenVisible} onClick={() => setVisible(false)}>
         cancel
