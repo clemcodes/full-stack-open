@@ -38,6 +38,8 @@ const App = () => {
       setUser(userInDb)
       setUsername('')
       setPassword('')
+      setMessage(`${username} logged in`)
+      setMessageIsFailure(false)
     } catch (exception) {
       setMessage('Wrong credentials')
       setMessageIsFailure(true)
@@ -98,7 +100,7 @@ const App = () => {
             />
           </label>
         </div>
-        <button>login</button>
+        <button id="login-button">login</button>
       </form>
     )
   }
