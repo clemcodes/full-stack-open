@@ -30,11 +30,24 @@ const reducer = (state = initialState, action) => {
       };
       return state.map((a) => (a.id !== id ? a : changedAnecdote));
     }
+    case "NEW_ANECDOTE":
+      return state.concat(action.payload);
   }
   console.log("state now: ", state);
   console.log("action", action);
 
   return state;
+};
+
+export const addNew = (content) => {
+  return {
+    type: "NEW_ANECDOTE",
+    payload: {
+      id: getId(),
+      content,
+      votes: 0,
+    },
+  };
 };
 
 export default reducer;
