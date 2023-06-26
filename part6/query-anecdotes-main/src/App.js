@@ -2,12 +2,22 @@ import AnecdoteForm from "./components/AnecdoteForm";
 import Notification from "./components/Notification";
 import { useQuery, useQueryClient, useMutation } from "react-query";
 import { getAnecdotes, updateAnecdote } from "./requests";
+import { useNotificationDispatch } from "./NotificationContext";
 
 const App = () => {
   const queryClient = useQueryClient();
+  const notificationDispatch = useNotificationDispatch();
+
   const anecdoteVoteMutation = useMutation(updateAnecdote, {
-    onSuccess: () => {
+    onSuccess: (anecdote) => {
       queryClient.invalidateQueries("anecdotes");
+      notificationDispatch({
+        type: "SHOW",
+        payload: `you voted: '${anecdote.content}'`,
+      });
+      setTimeout(() => {
+        notificationDispatch({ type: "REMOVE" });
+      }, 5000);
     },
   });
 

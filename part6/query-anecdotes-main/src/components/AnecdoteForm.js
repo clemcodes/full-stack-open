@@ -1,14 +1,33 @@
 import { useMutation, useQueryClient } from "react-query";
 import { createAnecdote } from "../requests";
+import { useNotificationDispatch } from "../NotificationContext";
 
 const AnecdoteForm = () => {
   const queryClient = useQueryClient();
 
   const newAnecdoteMutation = useMutation(createAnecdote, {
-    onSuccess: () => {
+    onSuccess: (newAnecdote) => {
       queryClient.invalidateQueries("anecdotes");
+      notificationDispatch({
+        type: "SHOW",
+        payload: `you created: '${newAnecdote.content}'`,
+      });
+      setTimeout(() => {
+        notificationDispatch({ type: "REMOVE" });
+      }, 5000);
+    },
+    onError: (newAnecdote) => {
+      notificationDispatch({
+        type: "SHOW",
+        data: `an error occurred while creating '${newAnecdote.content}', use at least 5 characters for`,
+      });
+      setTimeout(() => {
+        notificationDispatch({ type: "REMOVE" });
+      }, 5000);
     },
   });
+
+  const notificationDispatch = useNotificationDispatch();
 
   const onCreate = (event) => {
     event.preventDefault();
