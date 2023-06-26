@@ -8,19 +8,10 @@ const AnecdoteForm = () => {
   const newAnecdoteMutation = useMutation(createAnecdote, {
     onSuccess: (newAnecdote) => {
       queryClient.invalidateQueries("anecdotes");
-      notificationDispatch({
-        type: "SHOW",
-        payload: `you created: '${newAnecdote.content}'`,
-      });
-      setTimeout(() => {
-        notificationDispatch({ type: "REMOVE" });
-      }, 5000);
+      notificationDispatch(`you created: '${newAnecdote.content}'`);
     },
-    onError: (newAnecdote) => {
-      notificationDispatch({
-        type: "SHOW",
-        data: `an error occurred while creating '${newAnecdote.content}', use at least 5 characters for`,
-      });
+    onError: (error) => {
+      notificationDispatch(error.response.data.error);
       setTimeout(() => {
         notificationDispatch({ type: "REMOVE" });
       }, 5000);

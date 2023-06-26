@@ -11,13 +11,7 @@ const App = () => {
   const anecdoteVoteMutation = useMutation(updateAnecdote, {
     onSuccess: (anecdote) => {
       queryClient.invalidateQueries("anecdotes");
-      notificationDispatch({
-        type: "SHOW",
-        payload: `you voted: '${anecdote.content}'`,
-      });
-      setTimeout(() => {
-        notificationDispatch({ type: "REMOVE" });
-      }, 5000);
+      notificationDispatch(`you voted: '${anecdote.content}'`);
     },
   });
 
