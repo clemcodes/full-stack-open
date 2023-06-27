@@ -10,8 +10,8 @@
 | 3 Programming a server with NodeJS and Express | ✅     |
 | 4 Testing Express servers, user administration | ✅     |
 | 5 Testing React apps                           | ✅     |
-| 6 Advanced state management                    | 📚     |
-| 7 React router, custom hooks and webpack       |        |
+| 6 Advanced state management                    | ✅     |
+| 7 React router, custom hooks and webpack       | 📚     |
 | 8 GraphQL                                      |        |
 | 9 Typescript                                   |        |
 | 10 React Native                                |        |
