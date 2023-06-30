@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Menu from './components/Menu'
 import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import Users from './components/Users'
@@ -196,8 +197,12 @@ const App = () => {
       {!user && loginForm()}
       {user && (
         <>
+          <Menu />
+          <div>{user.name} logged in</div>
           <button onClick={handleLogout}>logout</button>
+          <h1>Blog App</h1>
           <CreateBlog createBlog={handleCreate} />
+          <Blogs blogs={blogs} />
         </>
       )}
       <Routes>
