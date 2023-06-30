@@ -10,20 +10,39 @@ import {
   useNotificationDispatch,
 } from './NotificationContext'
 
+import { useQuery, useMutation, useQueryClient } from 'react-query'
+
 const App = () => {
-  const [blogs, setBlogs] = useState([])
+  const queryClient = useQueryClient()
+
+  const blogVoteMutation = useMutation(blogService.update, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs')
+    },
+  })
+  const newBlogMutation = useMutation(blogService.create, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs')
+    },
+  })
+
+  const removeBlogMutation = useMutation(blogService.remove, {
+    onSuccess: () => {
+      queryClient.invalidateQueries('blogs')
+    },
+  })
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
   const message = useNotificationValue()
   const setMessage = useNotificationDispatch()
 
-  useEffect(() => {
-    blogService.getAll().then((blogs) => {
-      const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
-      setBlogs(sortedBlogs)
-    })
-  }, [blogs])
+  const { data } = useQuery('blogs', blogService.getAll, {
+    refetchOnWindowFocus: false,
+  })
+
+  const blogs = data || []
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -68,7 +87,7 @@ const App = () => {
   }
 
   const handleCreate = async (blogObject) => {
-    await blogService.create(blogObject)
+    await newBlogMutation.mutate(blogObject)
     setMessage('A new blog created!')
     setMessage({
       type: 'SHOW',
@@ -81,8 +100,12 @@ const App = () => {
     }, 5000)
   }
 
-  const updateBlog = (blog) => {
-    blogService.update(blog.id, blog)
+  const updateBlog = async (blog) => {
+    await blogVoteMutation.mutate(blog)
+  }
+
+  const removeBlog = async (id) => {
+    await removeBlogMutation.mutate(id)
   }
 
   const handleLogout = (e) => {
@@ -139,6 +162,7 @@ const App = () => {
             blog={blog}
             loggedUser={user.username}
             updateBlog={updateBlog}
+            removeBlog={removeBlog}
           />
         ))}
       </div>

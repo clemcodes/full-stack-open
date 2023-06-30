@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import blogService from '../services/blogs.js'
 
-const Blog = ({ blog, updateBlog, loggedUser }) => {
+const Blog = ({ blog, updateBlog, removeBlog, loggedUser }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -29,7 +28,7 @@ const Blog = ({ blog, updateBlog, loggedUser }) => {
 
   const handleRemove = () => {
     if (window.confirm('Remov blog You\'re NOT gonna need it!')) {
-      blogService.remove(blog.id)
+      removeBlog(blog.id)
     }
   }
 
