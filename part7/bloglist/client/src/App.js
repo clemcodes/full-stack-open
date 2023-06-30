@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import Users from './components/Users'
+import User from './components/User'
 import { CreateBlog } from './components/CreateBlog'
 import { Notification } from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs.js'
 import usersService from './services/users.js'
 
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useMatch } from 'react-router-dom'
 
 import {
   useNotificationValue,
@@ -58,6 +59,13 @@ const App = () => {
       setUsers(users)
     })
   }, [])
+
+  const match = useMatch('/users/:id')
+  const individual = match
+    ? users.find((user) => user.id === match.params.id)
+    : null
+
+  console.log('indi', individual)
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -195,6 +203,7 @@ const App = () => {
       {user && loggedInBlogs()}
       <Routes>
         <Route path="/users" element={<Users users={users} />} />
+        <Route path="/users/:id" element={<User user={individual} />} />
       </Routes>
     </div>
   )
