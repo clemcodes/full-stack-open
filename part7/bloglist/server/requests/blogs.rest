@@ -1,0 +1,16 @@
+GET http://localhost:3001/api/blogs
+
+###
+POST http://localhost:3001/api/blogs
+Content-Type: application/json
+
+{
+    "title": "Structure of backend application",
+    "author": "Full Stack Open",
+    "url": "https://fullstackopen.com/en/part4/structure_of_backend_application_introduction_to_testing",
+    "likes": 52
+}
+
+###
+DELETE http://localhost:3001/api/blogs/645670f7700929bc8f4f61f4
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImNsZW0iLCJpZCI6IjY0NTY1NDliOTI0NWRkNzJkOWQ2NTViNyIsImlhdCI6MTY4MzM3OTM4NH0.lZX4q2hMNFsVihmp9ksfC2hIrofJJLWLG32MfO-NA5g
