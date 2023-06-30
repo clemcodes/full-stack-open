@@ -9,17 +9,14 @@ import { Notification } from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs.js'
 import usersService from './services/users.js'
-
 import { Routes, Route, useMatch } from 'react-router-dom'
-
 import {
   useNotificationValue,
   useNotificationDispatch,
 } from './NotificationContext'
-
 import { useLoginValue, useLoginDispatch } from './LoginContext'
-
 import { useQuery, useMutation, useQueryClient } from 'react-query'
+import { Container, TextField, Button } from '@mui/material'
 
 const App = () => {
   const queryClient = useQueryClient()
@@ -122,7 +119,7 @@ const App = () => {
 
   const handleCreate = async (blogObject) => {
     await newBlogMutation.mutate(blogObject)
-    setMessage('A new blog created!')
+
     setMessage({
       type: 'SHOW',
       payload: ['A new blog created!', true],
@@ -146,8 +143,17 @@ const App = () => {
     e.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser({ type: 'REMOVE' })
-    setUser(null)
     blogService.setToken(null)
+
+    setMessage({
+      type: 'SHOW',
+      payload: ['successfully logged out', true],
+    })
+    setTimeout(() => {
+      setMessage({
+        type: 'REMOVE',
+      })
+    }, 5000)
   }
 
   const loginForm = () => {
@@ -155,35 +161,37 @@ const App = () => {
       <form onSubmit={handleSubmit}>
         {message && <Notification message={message} />}
         <h1>Log in to application</h1>
-        <div>
-          <label>
-            username:{' '}
-            <input
-              type="text"
-              name="username"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-            />
-          </label>
+        <div style={{ marginBottom: '16px' }}>
+          <TextField
+            label="username"
+            name="username"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+          />
         </div>
-        <div>
-          <label>
-            password:{' '}
-            <input
-              type="password"
-              name="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+        <div style={{ marginBottom: '16px' }}>
+          <TextField
+            label="password"
+            type="password"
+            name="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
         </div>
-        <button id="login-button">login</button>
+        <Button
+          id="login-button"
+          variant="contained"
+          color="primary"
+          type="submit"
+        >
+          login
+        </Button>
       </form>
     )
   }
 
   return (
-    <div>
+    <Container>
       {!user && loginForm()}
       {user && (
         <>
@@ -206,7 +214,7 @@ const App = () => {
           }
         />
       </Routes>
-    </div>
+    </Container>
   )
 }
 
