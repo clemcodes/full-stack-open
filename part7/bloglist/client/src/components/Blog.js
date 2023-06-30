@@ -1,7 +1,11 @@
-const Blog = ({ blog, updateBlog }) => {
+import { useState } from 'react'
+
+const Blog = ({ blog, updateBlog, addComment }) => {
   if (!blog) {
     return null
   }
+
+  const [comment, setComment] = useState('')
 
   const handleLikes = () => {
     const updatedBlog = {
@@ -13,6 +17,11 @@ const Blog = ({ blog, updateBlog }) => {
       likes: blog.likes + 1,
     }
     updateBlog(updatedBlog)
+  }
+
+  const handleComment = () => {
+    addComment(blog.id, comment)
+    setComment('')
   }
 
   return (
@@ -27,6 +36,21 @@ const Blog = ({ blog, updateBlog }) => {
           <button onClick={handleLikes}>like</button>
         </div>
         <div>added by {blog.user.name}</div>
+      </div>
+      <div>
+        <h2>comments:</h2>
+
+        <input
+          value={comment}
+          onChange={({ target }) => setComment(target.value)}
+        />
+        <button onClick={handleComment}>add comment</button>
+
+        <ul>
+          {blog.comments.map((comment, index) => (
+            <li key={index}>{comment}</li>
+          ))}
+        </ul>
       </div>
     </div>
   )

@@ -29,6 +29,14 @@ const App = () => {
       queryClient.invalidateQueries('blogs')
     },
   })
+  const blogCommentMutation = useMutation(
+    (data) => blogService.comment(data.id, data.comment),
+    {
+      onSuccess: () => {
+        queryClient.invalidateQueries('blogs')
+      },
+    }
+  )
   const newBlogMutation = useMutation(blogService.create, {
     onSuccess: () => {
       queryClient.invalidateQueries('blogs')
@@ -130,6 +138,10 @@ const App = () => {
     await blogVoteMutation.mutate(blog)
   }
 
+  const addComment = async (id, comment) => {
+    await blogCommentMutation.mutate({ id, comment })
+  }
+
   const handleLogout = (e) => {
     e.preventDefault()
     window.localStorage.removeItem('loggedUser')
@@ -158,7 +170,7 @@ const App = () => {
           <label>
             password:{' '}
             <input
-              type="text"
+              type="password"
               name="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -169,28 +181,6 @@ const App = () => {
       </form>
     )
   }
-
-  // const loggedInBlogs = () => {
-  //   return (
-  //     <div>
-  //       {!user && loginForm()}
-  //       <h2>blogs</h2>
-  //       {message && <Notification message={message} />}
-  //       <p>{user.name} logged in</p>
-  //       <button onClick={handleLogout}>logout</button>
-  //       <CreateBlog createBlog={handleCreate} />
-  //       {blogs.map((blog) => (
-  //         <Blog
-  //           key={blog.id}
-  //           blog={blog}
-  //           loggedUser={user.username}
-  //           updateBlog={updateBlog}
-  //           removeBlog={removeBlog}
-  //         />
-  //       ))}
-  //     </div>
-  //   )
-  // }
 
   return (
     <div>
@@ -211,7 +201,9 @@ const App = () => {
         <Route path="/blogs" element={<Blogs blogs={blogs} />} />
         <Route
           path="/blogs/:id"
-          element={<Blog blog={blog} updateBlog={updateBlog} />}
+          element={
+            <Blog blog={blog} updateBlog={updateBlog} addComment={addComment} />
+          }
         />
       </Routes>
     </div>
