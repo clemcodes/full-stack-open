@@ -10,6 +10,8 @@ import {
   useNotificationDispatch,
 } from './NotificationContext'
 
+import { useLoginValue, useLoginDispatch } from './LoginContext'
+
 import { useQuery, useMutation, useQueryClient } from 'react-query'
 
 const App = () => {
@@ -32,9 +34,11 @@ const App = () => {
     },
   })
 
+  const user = useLoginValue()
+  const setUser = useLoginDispatch()
+
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [user, setUser] = useState(null)
   const message = useNotificationValue()
   const setMessage = useNotificationDispatch()
 
@@ -48,7 +52,10 @@ const App = () => {
     const loggedUser = window.localStorage.getItem('loggedUser')
     if (loggedUser) {
       const userJSON = JSON.parse(loggedUser)
-      setUser(userJSON)
+      setUser({
+        type: 'SET',
+        data: loggedUser,
+      })
       blogService.setToken(userJSON.token)
     }
   }, [])
@@ -57,6 +64,7 @@ const App = () => {
     e.preventDefault()
     try {
       const userInDb = await loginService.login({ username, password })
+      setUser({ type: 'SET', payload: userInDb })
       window.localStorage.setItem('loggedUser', JSON.stringify(userInDb))
       blogService.setToken(userInDb.token)
       setUser(userInDb)
@@ -111,6 +119,7 @@ const App = () => {
   const handleLogout = (e) => {
     e.preventDefault()
     window.localStorage.removeItem('loggedUser')
+    setUser({ type: 'REMOVE' })
     setUser(null)
     blogService.setToken(null)
   }
