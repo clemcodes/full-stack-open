@@ -1,18 +1,7 @@
-import { useState } from 'react'
-
-const Blog = ({ blog, updateBlog, removeBlog, loggedUser }) => {
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: 'solid',
-    borderWidth: 1,
-    marginBottom: 5,
-    overflowWrap: 'break-word',
+const Blog = ({ blog, updateBlog }) => {
+  if (!blog) {
+    return null
   }
-
-  const [visible, setVisible] = useState(false)
-
-  const showWhenVisible = { display: visible ? '' : 'none' }
 
   const handleLikes = () => {
     const updatedBlog = {
@@ -26,30 +15,18 @@ const Blog = ({ blog, updateBlog, removeBlog, loggedUser }) => {
     updateBlog(updatedBlog)
   }
 
-  const handleRemove = () => {
-    if (window.confirm('Remov blog You\'re NOT gonna need it!')) {
-      removeBlog(blog.id)
-    }
-  }
-
   return (
-    <div style={blogStyle} className="blog">
-      {blog.title} {blog.author}
-      <button onClick={() => setVisible(!visible)}>
-        {visible ? 'hide' : 'view'}
-      </button>
-      <div data-testid="invisible" style={showWhenVisible}>
+    <div className="blog">
+      <h1>
+        {blog.title} {blog.author}
+      </h1>
+      <div data-testid="invisible">
         <div>{blog.url}</div>
         <div id="likes">
           likes {blog.likes}
           <button onClick={handleLikes}>like</button>
         </div>
-        <div>{blog.user.name}</div>
-        {blog.user.username === loggedUser && (
-          <div>
-            <button onClick={handleRemove}>Remove</button>
-          </div>
-        )}
+        <div>added by {blog.user.name}</div>
       </div>
     </div>
   )

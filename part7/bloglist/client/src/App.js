@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import Blogs from './components/Blogs'
 import Blog from './components/Blog'
 import Users from './components/Users'
 import User from './components/User'
@@ -33,12 +34,6 @@ const App = () => {
     },
   })
 
-  const removeBlogMutation = useMutation(blogService.remove, {
-    onSuccess: () => {
-      queryClient.invalidateQueries('blogs')
-    },
-  })
-
   const user = useLoginValue()
   const setUser = useLoginDispatch()
 
@@ -65,7 +60,10 @@ const App = () => {
     ? users.find((user) => user.id === match.params.id)
     : null
 
-  console.log('indi', individual)
+  const blogMatch = useMatch('/blogs/:id')
+  const blog = blogMatch
+    ? blogs.find((blog) => blog.id === blogMatch.params.id)
+    : null
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -131,10 +129,6 @@ const App = () => {
     await blogVoteMutation.mutate(blog)
   }
 
-  const removeBlog = async (id) => {
-    await removeBlogMutation.mutate(id)
-  }
-
   const handleLogout = (e) => {
     e.preventDefault()
     window.localStorage.removeItem('loggedUser')
@@ -175,35 +169,45 @@ const App = () => {
     )
   }
 
-  const loggedInBlogs = () => {
-    return (
-      <div>
-        {!user && loginForm()}
-        <h2>blogs</h2>
-        {message && <Notification message={message} />}
-        <p>{user.name} logged in</p>
-        <button onClick={handleLogout}>logout</button>
-        <CreateBlog createBlog={handleCreate} />
-        {blogs.map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            loggedUser={user.username}
-            updateBlog={updateBlog}
-            removeBlog={removeBlog}
-          />
-        ))}
-      </div>
-    )
-  }
+  // const loggedInBlogs = () => {
+  //   return (
+  //     <div>
+  //       {!user && loginForm()}
+  //       <h2>blogs</h2>
+  //       {message && <Notification message={message} />}
+  //       <p>{user.name} logged in</p>
+  //       <button onClick={handleLogout}>logout</button>
+  //       <CreateBlog createBlog={handleCreate} />
+  //       {blogs.map((blog) => (
+  //         <Blog
+  //           key={blog.id}
+  //           blog={blog}
+  //           loggedUser={user.username}
+  //           updateBlog={updateBlog}
+  //           removeBlog={removeBlog}
+  //         />
+  //       ))}
+  //     </div>
+  //   )
+  // }
 
   return (
     <div>
       {!user && loginForm()}
-      {user && loggedInBlogs()}
+      {user && (
+        <>
+          <button onClick={handleLogout}>logout</button>
+          <CreateBlog createBlog={handleCreate} />
+        </>
+      )}
       <Routes>
         <Route path="/users" element={<Users users={users} />} />
         <Route path="/users/:id" element={<User user={individual} />} />
+        <Route path="/blogs" element={<Blogs blogs={blogs} />} />
+        <Route
+          path="/blogs/:id"
+          element={<Blog blog={blog} updateBlog={updateBlog} />}
+        />
       </Routes>
     </div>
   )
