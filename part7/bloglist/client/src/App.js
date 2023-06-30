@@ -5,13 +5,18 @@ import { Notification } from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs.js'
 
+import {
+  useNotificationValue,
+  useNotificationDispatch,
+} from './NotificationContext'
+
 const App = () => {
   const [blogs, setBlogs] = useState([])
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [message, setMessage] = useState('')
-  const [messageIsFailure, setMessageIsFailure] = useState(null)
+  const message = useNotificationValue()
+  const setMessage = useNotificationDispatch()
 
   useEffect(() => {
     blogService.getAll().then((blogs) => {
@@ -38,25 +43,41 @@ const App = () => {
       setUser(userInDb)
       setUsername('')
       setPassword('')
-      setMessage(`${username} logged in`)
-      setMessageIsFailure(false)
+      setMessage({
+        type: 'SHOW',
+        payload: [`${username} logged in`, true],
+      })
+      setTimeout(() => {
+        setMessage({
+          type: 'REMOVE',
+        })
+      }, 5000)
     } catch (exception) {
-      setMessage('Wrong credentials')
-      setMessageIsFailure(true)
       setUsername('')
       setPassword('')
+      setMessage({
+        type: 'SHOW',
+        payload: ['Wrong credentials', false],
+      })
       setTimeout(() => {
-        setMessage(null)
-      }, 5000)
+        setMessage({
+          type: 'REMOVE',
+        })
+      }, 3000)
     }
   }
 
   const handleCreate = async (blogObject) => {
     await blogService.create(blogObject)
     setMessage('A new blog created!')
-    setMessageIsFailure(false)
+    setMessage({
+      type: 'SHOW',
+      payload: ['A new blog created!', true],
+    })
     setTimeout(() => {
-      setMessage(null)
+      setMessage({
+        type: 'REMOVE',
+      })
     }, 5000)
   }
 
@@ -74,9 +95,7 @@ const App = () => {
   const loginForm = () => {
     return (
       <form onSubmit={handleSubmit}>
-        {message && (
-          <Notification message={message} messageIsFailure={messageIsFailure} />
-        )}
+        {message && <Notification message={message} />}
         <h1>Log in to application</h1>
         <div>
           <label>
@@ -110,9 +129,7 @@ const App = () => {
       <div>
         {!user && loginForm()}
         <h2>blogs</h2>
-        {message && (
-          <Notification message={message} messageIsFailure={messageIsFailure} />
-        )}
+        {message && <Notification message={message} />}
         <p>{user.name} logged in</p>
         <button onClick={handleLogout}>logout</button>
         <CreateBlog createBlog={handleCreate} />
