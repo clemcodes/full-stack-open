@@ -1,9 +1,13 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Users from './components/Users'
 import { CreateBlog } from './components/CreateBlog'
 import { Notification } from './components/Notification'
 import loginService from './services/login'
 import blogService from './services/blogs.js'
+import usersService from './services/users.js'
+
+import { Routes, Route } from 'react-router-dom'
 
 import {
   useNotificationValue,
@@ -39,6 +43,7 @@ const App = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [users, setUsers] = useState([])
   const message = useNotificationValue()
   const setMessage = useNotificationDispatch()
 
@@ -47,6 +52,12 @@ const App = () => {
   })
 
   const blogs = data || []
+
+  useEffect(() => {
+    usersService.getAll().then((users) => {
+      setUsers(users)
+    })
+  }, [])
 
   useEffect(() => {
     const loggedUser = window.localStorage.getItem('loggedUser')
@@ -182,6 +193,9 @@ const App = () => {
     <div>
       {!user && loginForm()}
       {user && loggedInBlogs()}
+      <Routes>
+        <Route path="/users" element={<Users users={users} />} />
+      </Routes>
     </div>
   )
 }
