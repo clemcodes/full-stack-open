@@ -34,12 +34,12 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
-      <UpdatedAuthor />
+      <UpdatedAuthor authors={authors} />
     </div>
   );
 };
 
-const UpdatedAuthor = () => {
+const UpdatedAuthor = ({ authors }) => {
   const [name, setName] = useState("");
   const [born, setBorn] = useState("");
   const [updateAuthor] = useMutation(UPDATE_AUTHOR, {
@@ -61,7 +61,13 @@ const UpdatedAuthor = () => {
     <form onSubmit={submit}>
       <div>
         name
-        <input value={name} onChange={({ target }) => setName(target.value)} />
+        <select onChange={(e) => setName(e.target.value)}>
+          {authors.map((author) => (
+            <option key={author.name} value={author.name}>
+              {author.name}
+            </option>
+          ))}
+        </select>
       </div>
       <div>
         born
